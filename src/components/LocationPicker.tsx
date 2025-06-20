@@ -46,12 +46,14 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
     const loadGoogleMaps = () => {
       if (typeof window !== 'undefined' && !window.google) {
         const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
+        // Fallback API key kullan
+        const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyDi1mpSI-0uvm-Bngr9pegN2vi2xBvQXsU';
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
         script.async = true;
         script.defer = true;
         script.onload = initializeMap;
         script.onerror = () => {
-          console.error('Google Maps yüklenemedi');
+          console.error('Google Maps yüklenemedi - API key kontrol edin');
         };
         document.head.appendChild(script);
       } else if (window.google) {

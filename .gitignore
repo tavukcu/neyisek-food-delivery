@@ -72,3 +72,4 @@ hostinger-deployment/
 .next/
 node_modules/
 *.zip
+firebase-debug.log

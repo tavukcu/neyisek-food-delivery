@@ -1,0 +1,12 @@
+{
+  "services/restaurantService.ts -> @/services/imageUploadService": {
+    "id": "services/restaurantService.ts -> @/services/imageUploadService",
+    "files": [
+      "static/chunks/_app-pages-browser_src_services_imageUploadService_ts.js"
+    ]
+  },
+  "services/userPresenceService.ts -> firebase/firestore": {
+    "id": "services/userPresenceService.ts -> firebase/firestore",
+    "files": []
+  }
+}

@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Kullanıcı doğrulama fonksiyonu
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Admin kontrolü - sadece yazma işlemleri için kullanılmalı
+    function isAdmin() {
+      return isSignedIn() && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // GEÇICI: Debug için tüm erişimlere izin ver
+    match /{document=**} {
+      allow read, write: if true;
+    }
+
+    // Kullanıcı belgesi - sadece kendi belgesini okuyabilir/yazabilir
+    match /users/{userId} {
+      allow read, write: if true; // Geçici olarak herkese açık
+    }
+
+    // Restoran başvuruları - herkes okuyabilir, sadece başvuru sahibi yazabilir
+    match /restaurant_applications/{appId} {
+      allow read, write: if true; // Geçici olarak herkese açık
+    }
+
+    // Restoranlar - herkes okuyabilir, restoran sahipleri kendi restoranlarını güncelleyebilir, admin tüm yetkilere sahip
+    match /restaurants/{restaurantId} {
+      allow read, write: if true; // Geçici olarak herkese açık
+    }
+
+    // Kategoriler - herkes okuyabilir, sadece admin yazabilir
+    match /categories/{categoryId} {
+      allow read, write: if true; // Geçici olarak herkese açık
+    }
+
+    // Ürünler - herkes okuyabilir, restoran sahipleri kendi ürünlerini yönetebilir, admin tüm yetkilere sahip
+    match /products/{productId} {
+      allow read, write: if true; // Geçici olarak herkese açık
+    }
+
+    // Siparişler - kullanıcılar kendi siparişlerini, restoran sahipleri kendi restoranlarının siparişlerini görebilir
+    match /orders/{orderId} {
+      allow read, write: if true; // Geçici olarak herkese açık
+    }
+
+    // Mali işlemler - sadece admin erişimi
+    match /transactions/{transactionId} {
+      allow read, write: if true; // Geçici olarak herkese açık
+    }
+
+    // Restoran mali özetleri - sadece admin erişimi
+    match /restaurant-financials/{financialId} {
+      allow read, write: if true; // Geçici olarak herkese açık
+    }
+
+    // Kullanıcı presence durumu - kullanıcılar kendi durumunu güncelleyebilir, adminler okuyabilir
+    match /userPresence/{userId} {
+      allow read, write: if true; // Geçici olarak herkese açık
+    }
+  }
+} 

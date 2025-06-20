@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
+import { useCart } from '@/hooks/useCart';
 import { useCurrentUserPresence } from '@/hooks/useUserPresence';
 import { 
   ShoppingCart, 
@@ -24,10 +25,10 @@ import NotificationCenter from './NotificationCenter';
 // Header komponenti
 export default function Header() {
   const { user, signOut } = useAuth();
+  const { totalItems } = useCart(); // useCart hook'undan totalItems'ı alıyoruz
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [cartItemsCount] = useState(0); // Bu değer useCart hook'undan gelecek
 
   // Kullanıcı presence sistemini başlat
   useCurrentUserPresence();
@@ -178,12 +179,12 @@ export default function Header() {
             {/* Cart Icon */}
             <Link 
               href="/cart" 
-              className="relative p-1.5 sm:p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all duration-300"
+              className="relative p-1.5 sm:p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all duration-300 group"
             >
               <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5 text-gray-700 hover:text-green-600 transition-colors duration-300" />
-              {cartItemsCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-yellow-500 text-gray-900 text-xs font-bold rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center">
-                  {cartItemsCount}
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 sm:h-6 sm:w-6 flex items-center justify-center shadow-lg border-2 border-white animate-pulse group-hover:scale-110 transition-transform duration-200">
+                  {totalItems > 99 ? '99+' : totalItems}
                 </span>
               )}
             </Link>

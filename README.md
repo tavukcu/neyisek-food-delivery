@@ -1,285 +1,215 @@
-# NeYisek.com - AI Destekli Yemek Sipariş Platformu
+# NeYisek.com - Turkish Food Delivery Platform
 
-🚀 **Google Gemini AI** ile desteklenen modern yemek sipariş platformu
+[![Next.js](https://img.shields.io/badge/Next.js-13-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
+[![Firebase](https://img.shields.io/badge/Firebase-v9-orange)](https://firebase.google.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.0-38B2AC)](https://tailwindcss.com/)
 
-## 🤖 AI Özellikler
+Modern, AI-powered food delivery platform designed specifically for the Turkish market. Built with Next.js, TypeScript, Firebase, and Google Gemini AI.
 
-### 🔥 **YENİ! Gelişmiş Gemini AI Entegrasyonu**
+## 🚀 Features
 
-#### 📸 **Görsel Menü Tanıma**
-- **Gemini Vision API** ile yemek fotoğrafı analizi
-- Malzeme, kalori ve beslenme bilgisi tespiti
-- Alerjen uyarıları ve diyet uygunluğu
-- Mutfak türü ve lezzet profili analizi
+### Core Features
+- **Real-time Order Tracking** - Live GPS tracking and status updates
+- **AI-Powered Recommendations** - Smart food suggestions using Google Gemini AI
+- **Multi-language Support** - Turkish and English localization
+- **Advanced Search** - AI-enhanced search with filters
+- **Real-time Notifications** - Push notifications and in-app alerts
+- **User Authentication** - Secure login with Firebase Auth
 
-#### 💝 **Ruh Hali Bazlı Öneriler**
-- Kullanıcının ruh haline göre AI önerileri
-- Hava durumu ve zaman faktörlü analiz
-- Psikoloji destekli yemek eşleştirme
-- Aromaterapi ve renk terapisi önerileri
+### Restaurant Management
+- **Restaurant Dashboard** - Complete restaurant management panel
+- **Menu Management** - Easy menu creation and editing
+- **Order Management** - Real-time order processing
+- **Analytics Dashboard** - Revenue, orders, and performance metrics
+- **Financial Reports** - Automated financial reporting
 
-#### 🧠 **Akıllı Chatbot**
-- Doğal dil ile sipariş alma
-- Gerçek zamanlı menü önerileri
-- Beslenme danışmanlığı
-- 7/24 AI müşteri desteği
+### Admin Features
+- **Super Admin Panel** - Platform-wide management
+- **User Management** - Customer and restaurant user control
+- **Analytics & Reports** - Business intelligence dashboard
+- **Commission Management** - Automated commission tracking
+- **Advertisement Management** - Banner and promotion control
 
-#### 🍽️ **Gelişmiş Beslenme Analizi**
-- Kişiselleştirilmiş diyet planları
-- Sağlık hedeflerine göre öneriler
-- Besin değeri optimizasyonu
-- Alerjik madde kontrolleri
+### AI Integration
+- **Smart Recommendations** - Personalized food suggestions
+- **Mood-based Suggestions** - AI recommendations based on user mood
+- **Cross-selling** - Intelligent upselling recommendations
+- **Content Generation** - AI-powered descriptions and content
 
-#### 👨‍🍳 **Gastronomi Uzmanı AI**
-- Yemek eşleştirme önerileri
-- Şarap eşleştirme tavsiyeleri
-- Chef ipuçları ve pişirme teknikleri
-- Tarif önerileri ve modifikasyonlar
+## 🛠 Tech Stack
 
----
+### Frontend
+- **Next.js 13** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Utility-first CSS framework
+- **React Hot Toast** - Beautiful notifications
+- **Lucide React** - Modern icon library
 
-## 🚀 Özellikler
+### Backend & Services
+- **Firebase v9**
+  - Authentication (Auth)
+  - Firestore Database
+  - Cloud Storage
+  - Cloud Messaging (FCM)
+  - Hosting
+- **Google Gemini AI** - AI-powered features
+- **Vercel** - Deployment and hosting
 
-### 🍕 **Temel Platform**
-- ✅ Modern ve responsive tasarım
-- ✅ Gerçek zamanlı sipariş takibi
-- ✅ Çoklu ödeme seçenekleri
-- ✅ Restoran yönetim paneli
+### Development Tools
+- **ESLint** - Code linting
+- **Prettier** - Code formatting
+- **Git** - Version control
 
-### 🧮 **Akıllı Kalori Sistemi**
-- ✅ Otomatik kalori hesaplama
-- ✅ Beslenme bilgileri
-- ✅ Porsiyon bazlı analiz
-- ✅ Diyet takibi
+## 📦 Installation
 
-### 🤖 **AI Destekli Özellikler**
-- ✅ **Görsel menü tanıma (YENİ!)**
-- ✅ **Ruh hali bazlı öneriler (YENİ!)**
-- ✅ **Gelişmiş beslenme analizi (YENİ!)**
-- ✅ **Gastronomi uzmanı AI (YENİ!)**
-- ✅ Akıllı sipariş önerileri
-- ✅ Doğal dil sipariş işleme
-- ✅ Kişiselleştirilmiş menü
-
-### 📱 **Kullanıcı Deneyimi**
-- ✅ Sezgisel kullanıcı arayüzü
-- ✅ Hızlı sipariş sistemi
-- ✅ Favori ürün yönetimi
-- ✅ Sipariş geçmişi
-
----
-
-## 🛠️ Teknoloji Stack
-
-### **Frontend**
-- **Next.js 14** - React Framework
-- **TypeScript** - Tip güvenliği
-- **Tailwind CSS** - Styling
-- **Lucide Icons** - İkonlar
-
-### **AI & Analytics**
-- **Google Gemini Pro** - Doğal dil işleme
-- **Gemini Vision** - Görsel analiz
-- **AI Chatbot** - Müşteri desteği
-- **Smart Recommendations** - Öneri sistemi
-
-### **Backend & Database**
-- **Firebase** - Backend as a Service
-- **Firestore** - NoSQL Database
-- **Firebase Auth** - Kimlik doğrulama
-- **Firebase Storage** - Dosya depolama
-
----
-
-## 🎯 AI Kullanım Örnekleri
-
-### 1. **Görsel Menü Analizi**
+1. **Clone the repository**
 ```bash
-# Kullanıcı yemek fotoğrafı yükler
-→ AI analiz eder: "Bu bir Margherita Pizza"
-→ Malzemeler: Domates, mozzarella, fesleğen
-→ Kalori: ~290 kcal/dilim
-→ Alerjiler: Gluten, süt ürünleri
+git clone https://github.com/yourusername/neyisek-food-delivery.git
+cd neyisek-food-delivery
 ```
 
-### 2. **Ruh Hali Önerileri**
-```bash
-# Kullanıcı: "Yorgunum ve soğuk hava var"
-→ AI önerir: Sıcak çorba, bitki çayı
-→ Renk terapisi: Turuncu ve sarı tonlar
-→ Aromaterapi: Tarçın ve zencefil
-```
-
-### 3. **Doğal Dil Sipariş**
-```bash
-# Kullanıcı: "Acıkmışım, hafif bir şeyler"
-→ AI analiz eder ve önerir
-→ Sepete otomatik ekler
-→ Kişiselleştirilmiş alternatifler sunar
-```
-
----
-
-## 🚀 Kurulum
-
-### Gereksinimler
-- Node.js 18+
-- npm veya yarn
-- Firebase projesi
-- **Google AI Studio API Key** (Gemini için)
-
-### 1. Projeyi Klonlayın
-```bash
-git clone https://github.com/your-username/neyisek.git
-cd neyisek
-```
-
-### 2. Bağımlılıkları Yükleyin
+2. **Install dependencies**
 ```bash
 npm install
 ```
 
-### 3. Environment Variables
-`.env.local` dosyası oluşturun:
-
+3. **Environment Setup**
+Create a `.env.local` file in the root directory:
 ```env
-# Firebase Config
-NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_firebase_project_id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=your_firebase_app_id
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
 
-# Google AI (Gemini) API Key
 NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
-
-# Email Service
-NEXT_PUBLIC_EMAILJS_SERVICE_ID=your_emailjs_service_id
-NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=your_emailjs_template_id
-NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=your_emailjs_public_key
 ```
 
-### 4. Firebase Setup
-```bash
-# Firebase CLI kurulumu
-npm install -g firebase-tools
-
-# Firebase'e giriş
-firebase login
-
-# Firestore index'lerini deploy et
-firebase deploy --only firestore:indexes
-```
-
-### 5. Gemini AI Setup
-1. [Google AI Studio](https://makersuite.google.com/app/apikey)'da API key oluşturun
-2. API key'i `.env.local` dosyasına ekleyin
-3. Gemini Pro ve Gemini Vision modelleri aktif olduğundan emin olun
-
-### 6. Uygulamayı Başlatın
+4. **Run the development server**
 ```bash
 npm run dev
 ```
 
-Uygulama http://localhost:3000 adresinde çalışacaktır.
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
----
+## 🚀 Deployment
 
-## 🎨 AI Özellikleri Kullanımı
+### Firebase Hosting
+```bash
+# Build the project
+npm run build
 
-### **Görsel Analiz**
-1. Menü sayfasına gidin
-2. Sol panelden "AI Menü Analizi"ni açın
-3. Yemek fotoğrafı yükleyin
-4. AI analiz sonuçlarını inceleyin
+# Install Firebase CLI
+npm install -g firebase-tools
 
-### **Ruh Hali Önerileri**
-1. "Ruh Haline Göre Öneriler" bölümünü açın
-2. Mevcut ruh halinizi seçin
-3. Hava durumu ve zaman bilgilerini güncelleyin
-4. AI önerilerini inceleyin
+# Login to Firebase
+firebase login
 
-### **Chatbot**
-1. Sağ alt köşedeki chat butonuna tıklayın
-2. Doğal dille sipariş verin
-3. AI ile sohbet edin
+# Initialize Firebase hosting
+firebase init hosting
 
----
-
-## 🏗️ Proje Yapısı
-
-```
-src/
-├── app/                 # Next.js App Router
-├── components/          # React bileşenleri
-│   ├── AIChatbot.tsx       # AI Chatbot
-│   ├── ImageMenuAnalyzer.tsx # Görsel analiz
-│   └── MoodBasedRecommendations.tsx # Ruh hali önerileri
-├── services/            # API servisleri
-│   ├── geminiService.ts    # Gemini AI servisi
-│   ├── productService.ts   # Ürün servisleri
-│   └── aiOrderService.ts   # AI sipariş servisleri
-├── hooks/               # Custom React hooks
-├── types/               # TypeScript tip tanımları
-└── utils/               # Yardımcı fonksiyonlar
+# Deploy
+firebase deploy
 ```
 
+### Vercel (Recommended)
+```bash
+# Install Vercel CLI
+npm install -g vercel
+
+# Deploy
+vercel
+```
+
+## 📱 Features Overview
+
+### For Customers
+- Browse restaurants and menus
+- AI-powered food recommendations
+- Real-time order tracking
+- Multiple payment options
+- Rating and review system
+- Favorites and order history
+- Location-based delivery
+
+### For Restaurants
+- Restaurant registration and verification
+- Menu management with categories
+- Real-time order processing
+- Performance analytics
+- Financial reporting
+- Customer reviews management
+- Marketing tools
+
+### For Administrators
+- Platform-wide management
+- User and restaurant oversight
+- Analytics and reporting
+- Commission tracking
+- Advertisement management
+- System configuration
+
+## 🔧 Configuration
+
+### Firebase Setup
+1. Create a Firebase project
+2. Enable Authentication (Email/Password, Google)
+3. Set up Firestore Database
+4. Configure Cloud Storage
+5. Enable Cloud Messaging
+6. Set up Security Rules
+
+### Gemini AI Setup
+1. Get API key from Google AI Studio
+2. Configure in environment variables
+3. Set up AI prompts and responses
+
+## 📊 Analytics & Monitoring
+
+- User engagement tracking
+- Order completion rates
+- Revenue analytics
+- Performance monitoring
+- Error tracking and reporting
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🛡 Security
+
+- Firebase Security Rules implemented
+- Input validation and sanitization
+- Secure authentication flow
+- Data encryption in transit
+- Regular security audits
+
+## 📞 Support
+
+For support, email support@neyisek.com or create an issue in this repository.
+
+## 🗺 Roadmap
+
+- [ ] Mobile app development (React Native)
+- [ ] Advanced analytics dashboard
+- [ ] Multi-city expansion
+- [ ] Integration with POS systems
+- [ ] Voice ordering with AI
+- [ ] Advanced delivery optimization
+- [ ] Loyalty program system
+- [ ] Corporate ordering features
+
 ---
 
-## 🔮 Gelecek Planları
-
-### **Kısa Vadeli (1-2 Ay)**
-- [ ] Sesli sipariş alma
-- [ ] AR menü görüntüleme
-- [ ] Akıllı fiyatlandırma
-- [ ] Sosyal medya entegrasyonu
-
-### **Orta Vadeli (3-6 Ay)**
-- [ ] Machine Learning öneri sistemi
-- [ ] IoT cihaz entegrasyonu
-- [ ] Blockchain ödeme sistemi
-- [ ] Multi-language AI support
-
-### **Uzun Vadeli (6+ Ay)**
-- [ ] AI chef asistanı
-- [ ] Sanal restoran deneyimi
-- [ ] Drone teslimat sistemi
-- [ ] Global expansion
-
----
-
-## 🤝 Katkıda Bulunun
-
-1. Fork edin
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Commit yapın (`git commit -m 'Add amazing feature'`)
-4. Push edin (`git push origin feature/amazing-feature`)
-5. Pull Request açın
-
----
-
-## 📝 Lisans
-
-Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasını inceleyin.
-
----
-
-## 📞 İletişim
-
-- **Website**: [NeYisek.com](https://neyisek.com)
-- **Email**: info@neyisek.com
-- **GitHub**: [@your-username](https://github.com/your-username)
-
----
-
-## 🙏 Teşekkürler
-
-- **Google Gemini AI** - Güçlü AI özellikleri için
-- **Firebase** - Backend altyapısı için
-- **Next.js** - Modern React framework için
-- **Tailwind CSS** - Güzel tasarım sistemi için
-
----
-
-**⭐ Projeyi beğendiyseniz yıldız vermeyi unutmayın!** 
+Built with ❤️ for the Turkish food delivery market 

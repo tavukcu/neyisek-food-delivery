@@ -91,8 +91,8 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
 
     if (typeof window !== 'undefined') {
       const script = document.createElement('script');
-      // Fallback API key kullan
-      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyDi1mpSI-0uvm-Bngr9pegN2vi2xBvQXsU';
+      // Yeni çalışan API key deneyerek
+      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyBdVl-cerhPH9CLKam6HIB4_4h62DqPZdY';
       
       console.log('🔑 Google Maps API Key:', apiKey ? 'Mevcut' : 'Bulunamadı');
 
@@ -110,11 +110,22 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
       
       script.onerror = (error) => {
         console.error('❌ Google Maps yükleme hatası:', error);
-        setLocationError('Google Maps API yüklenemedi. API anahtarı geçersiz olabilir.');
+        setLocationError('Google Maps API yüklenemedi. Lütfen konum bilgilerini manuel olarak girin.');
+        // Fallback: Harita olmadan da çalışabilir hale getir
+        setIsMapLoaded(true);
       };
       
       console.log('📡 Google Maps script ekleniyor:', script.src);
       document.head.appendChild(script);
+      
+      // 10 saniye timeout ekle
+      setTimeout(() => {
+        if (!isMapLoaded) {
+          console.error('⏰ Google Maps yükleme timeout');
+          setLocationError('Harita yüklenemedi. İnternet bağlantınızı kontrol edin.');
+          setIsMapLoaded(true); // Fallback mode
+        }
+      }, 10000);
     }
   };
 

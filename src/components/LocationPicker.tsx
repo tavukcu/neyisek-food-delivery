@@ -46,16 +46,25 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
     const loadGoogleMaps = () => {
       if (typeof window !== 'undefined' && !window.google) {
         const script = document.createElement('script');
-        // Fallback API key kullan
-        const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyDi1mpSI-0uvm-Bngr9pegN2vi2xBvQXsU';
+        // Yeni çalışan API key deneyerek
+        const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyBdVl-cerhPH9CLKam6HIB4_4h62DqPZdY';
         script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
         script.async = true;
         script.defer = true;
         script.onload = initializeMap;
         script.onerror = () => {
           console.error('Google Maps yüklenemedi - API key kontrol edin');
+          setIsMapLoaded(true); // Fallback mode
         };
         document.head.appendChild(script);
+        
+        // 10 saniye timeout
+        setTimeout(() => {
+          if (!isMapLoaded) {
+            console.error('Google Maps yükleme timeout');
+            setIsMapLoaded(true);
+          }
+        }, 10000);
       } else if (window.google) {
         initializeMap();
       }

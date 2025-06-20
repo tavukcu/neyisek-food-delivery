@@ -69,3 +69,6 @@ build/
 # Deployment
 neyisek-*.zip
 hostinger-deployment/ 
+.next/
+node_modules/
+*.zip

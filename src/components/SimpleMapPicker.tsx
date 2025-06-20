@@ -80,9 +80,17 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
   };
 
   const loadGoogleMaps = () => {
-    console.log('🗺️ Google Maps yükleniyor...');
+    console.log('🗺️ Google Maps yükleme atlanıyor - Fallback mode aktif');
     
-    // API zaten yüklenmişse direkt başlat
+    // Şimdilik Google Maps'i devre dışı bırak ve fallback kullan
+    setLocationError('');
+    setIsMapLoaded(true);
+    setCurrentAddress('Manuel konum seçimi aktif');
+    onLocationSelect('Manuel konum seçimi', currentLat, currentLng);
+    return;
+    
+    // Google Maps kodu geçici olarak devre dışı
+    /*
     if (typeof window !== 'undefined' && (window as any).google?.maps) {
       console.log('✅ Google Maps zaten yüklü');
       initializeMap();
@@ -91,7 +99,6 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
 
     if (typeof window !== 'undefined') {
       const script = document.createElement('script');
-      // Yeni çalışan API key deneyerek
       const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyBdVl-cerhPH9CLKam6HIB4_4h62DqPZdY';
       
       console.log('🔑 Google Maps API Key:', apiKey ? 'Mevcut' : 'Bulunamadı');
@@ -100,7 +107,6 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
       script.async = true;
       script.defer = true;
       
-      // Global callback
       (window as any).initGoogleMaps = () => {
         console.log('✅ Google Maps API yüklendi');
         setTimeout(() => {
@@ -111,22 +117,21 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
       script.onerror = (error) => {
         console.error('❌ Google Maps yükleme hatası:', error);
         setLocationError('Google Maps API yüklenemedi. Lütfen konum bilgilerini manuel olarak girin.');
-        // Fallback: Harita olmadan da çalışabilir hale getir
         setIsMapLoaded(true);
       };
       
       console.log('📡 Google Maps script ekleniyor:', script.src);
       document.head.appendChild(script);
       
-      // 10 saniye timeout ekle
       setTimeout(() => {
         if (!isMapLoaded) {
           console.error('⏰ Google Maps yükleme timeout');
           setLocationError('Harita yüklenemedi. İnternet bağlantınızı kontrol edin.');
-          setIsMapLoaded(true); // Fallback mode
+          setIsMapLoaded(true);
         }
       }, 10000);
     }
+    */
   };
 
   const initializeMap = () => {
@@ -252,6 +257,53 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
 
   return (
     <div className={`relative ${className}`}>
+      {/* Harita olmadan manuel konum seçimi */}
+      {isMapLoaded && !mapInstanceRef.current && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 border-2 border-dashed border-blue-300 rounded-lg">
+          <div className="text-center p-6">
+            <MapPin className="h-12 w-12 text-blue-500 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">Manuel Konum Seçimi</h3>
+            <p className="text-sm text-gray-600 mb-4">Harita şu anda kullanılamıyor. Koordinatları manuel olarak ayarlayabilirsiniz.</p>
+            
+            <div className="space-y-3 max-w-xs mx-auto">
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Enlem (Latitude)</label>
+                <input
+                  type="number"
+                  value={currentLat}
+                  onChange={(e) => {
+                    const lat = parseFloat(e.target.value) || 0;
+                    setCurrentLat(lat);
+                    onLocationSelect(currentAddress, lat, currentLng);
+                  }}
+                  step="0.000001"
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="41.0082"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Boylam (Longitude)</label>
+                <input
+                  type="number"
+                  value={currentLng}
+                  onChange={(e) => {
+                    const lng = parseFloat(e.target.value) || 0;
+                    setCurrentLng(lng);
+                    onLocationSelect(currentAddress, currentLat, lng);
+                  }}
+                  step="0.000001"
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="28.9784"
+                />
+              </div>
+              <div className="text-xs text-gray-500 mt-2">
+                İstanbul merkez: 41.0082, 28.9784
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {/* Harita Container */}
       <div 
         className="w-full bg-gray-100 rounded-lg border border-gray-300 relative overflow-hidden"
@@ -260,7 +312,7 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
         <div
           ref={mapRef}
           className="w-full h-full"
-          style={{ height: '400px' }}
+          style={{ height: '400px', display: mapInstanceRef.current ? 'block' : 'none' }}
         />
         
         {/* Loading Overlay */}

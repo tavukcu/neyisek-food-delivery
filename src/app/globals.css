@@ -108,10 +108,15 @@
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
+    scroll-behavior: smooth;
   }
   
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-gray-50 text-gray-900 antialiased;
+    font-feature-settings: 'liga' 1, 'kern' 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
   /* Sabit header için main element'lere padding-top ekliyoruz */
@@ -145,27 +150,27 @@
 @layer components {
   /* Ana buton stili */
   .btn-primary {
-    @apply bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl;
+    @apply bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md;
   }
   
   /* İkincil buton stili */
   .btn-secondary {
-    @apply bg-secondary-500 hover:bg-secondary-600 text-gray-900 font-medium py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl;
+    @apply bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium py-3 px-6 rounded-lg transition-colors duration-200;
   }
   
   /* Outline buton stili */
   .btn-outline {
-    @apply border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white font-medium py-3 px-6 rounded-lg transition-all duration-200;
+    @apply border border-green-500 text-green-500 hover:bg-green-500 hover:text-white font-medium py-3 px-6 rounded-lg transition-all duration-200;
   }
   
   /* Kart container stili */
   .card {
-    @apply bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100;
+    @apply bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100;
   }
   
   /* Input field stili */
   .form-input {
-    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200;
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200;
   }
   
   /* Checkbox stili */
@@ -179,23 +184,18 @@
   }
   
   /* Hata mesajı stili */
-  .error-message {
+  .form-error {
     @apply text-red-600 text-sm mt-1;
-  }
-  
-  /* Başarı mesajı stili */
-  .success-message {
-    @apply text-green-600 text-sm mt-1;
   }
   
   /* Yükleniyor spinner animasyonu */
   .spinner {
-    @apply animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500;
+    @apply animate-spin rounded-full h-8 w-8 border-2 border-gray-200 border-t-green-500;
   }
   
   /* Küçük spinner */
   .spinner-sm {
-    @apply animate-spin rounded-full h-4 w-4 border-b-2 border-white;
+    @apply animate-spin rounded-full h-4 w-4 border-2 border-gray-200 border-t-white;
   }
   
   /* Mobil menü animasyonu */
@@ -374,10 +374,35 @@
   .transform-gpu {
     transform: translateZ(0);
   }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  .contain-layout {
+    contain: layout;
+  }
+
+  .contain-paint {
+    contain: paint;
+  }
 }
 
 /* Floating Home Button Animations */
-@keyframes fade-in {
+@keyframes fadeIn {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -398,10 +423,6 @@
   60% {
     transform: translateY(-1px);
   }
-}
-
-.animate-fade-in {
-  animation: fade-in 0.3s ease-out;
 }
 
 .animate-bounce-subtle {
@@ -748,5 +769,68 @@
   .btn-magical {
     font-size: 0.9rem;
     padding: 0.75rem 1.5rem;
+  }
+}
+
+/* Non-critical animations - loaded after initial render */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.6); }
+  }
+  
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite;
+  }
+  
+  .hover-lift {
+    transition: transform 0.2s ease;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* Responsive optimizations */
+@media (max-width: 640px) {
+  .btn-primary,
+  .btn-secondary,
+  .btn-outline {
+    @apply py-2 px-4 text-sm;
+  }
+  
+  .card {
+    @apply rounded-md;
+  }
+}
+
+/* Dark mode support (if needed) */
+@media (prefers-color-scheme: dark) {
+  .card {
+    @apply bg-gray-800 border-gray-700;
+  }
+  
+  .form-input {
+    @apply bg-gray-800 border-gray-700 text-white;
   }
 }

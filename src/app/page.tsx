@@ -229,7 +229,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-golden gap-8 lg:gap-16 items-center min-h-[100vh] py-12 lg:py-0">
             
             {/* Left Column - Main Content (Golden Ratio: 1.618 part) */}
-            <div className="space-y-8 lg:space-y-12 text-center lg:text-left order-2 lg:order-1">
+            <div className="space-y-8 lg:space-y-12 text-center lg:text-left order-1 lg:order-1">
               
               {/* Premium Badge */}
               <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full px-6 py-3 shadow-2xl">
@@ -304,7 +304,7 @@ export default function HomePage() {
             </div>
 
             {/* Right Column - Feature Cards (Golden Ratio: 1 part) */}
-            <div className="space-y-6 order-1 lg:order-2">
+            <div className="space-y-6 order-2 lg:order-2">
               <div className="grid gap-6">
                 {/* AI Analytics Card */}
                 <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl p-8 transform hover:scale-105 transition-all duration-300">

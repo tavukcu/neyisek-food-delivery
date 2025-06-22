@@ -26,96 +26,99 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
+    // Guest user için özel ID oluştur
+    const userId = customerInfo.isGuest && !customerInfo.userId.startsWith('guest_') 
+      ? `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      : customerInfo.userId;
+
     // Sipariş verilerini Order tipine uygun şekilde hazırla
     const orderData = {
-      userId: customerInfo.userId || 'guest-' + Date.now(),
+      userId,
       user: {
-        uid: customerInfo.userId || 'guest-' + Date.now(),
+        uid: userId,
         displayName: customerInfo.name,
         email: customerInfo.email || '',
         phoneNumber: customerInfo.phone,
         role: 'customer' as const,
         isActive: true,
-        createdAt: new Date()
+        createdAt: new Date(),
+        // Guest user flag'i ekle
+        isGuest: customerInfo.isGuest || false
       },
       restaurantId,
       items: items.map((item: any) => ({
-        productId: item.product?.id || item.id,
+        productId: item.product.id,
         product: {
-          id: item.product?.id || item.id,
-          name: item.product?.name || item.name,
-          price: item.product?.price || item.price,
-          categoryId: item.product?.categoryId || '',
-          description: item.product?.description || '',
-          restaurantId: restaurantId,
-          imageUrl: item.product?.imageUrl || '',
-          images: [],
-          variants: [],
-          ingredients: [],
-          allergens: [],
-          isVegetarian: false,
-          isVegan: false,
-          isGlutenFree: false,
-          preparationTime: 0,
-          calories: 0,
-          isActive: true,
-          stock: 100,
-          minStock: 0,
-          maxStock: 1000,
-          tags: [],
-          rating: 0,
-          reviewCount: 0,
-          isPopular: false,
-          isFeatured: false,
-          createdAt: new Date(),
-          updatedAt: new Date()
+          id: item.product.id,
+          name: item.product.name,
+          price: item.product.price,
+          categoryId: item.product.categoryId,
+          imageUrl: item.product.imageUrl,
+          restaurantId: restaurantId
         },
         quantity: item.quantity,
-        specialInstructions: item.notes || '',
-        categoryId: item.product?.categoryId || '',
-        price: item.product?.price || item.price
+        price: item.product.price,
+        specialInstructions: item.notes || ''
       })),
-      subtotal: totalAmount,
-      deliveryFee: 0, // Şimdilik 0
-      total: totalAmount,
       status: OrderStatus.PENDING,
       deliveryAddress: deliveryAddress || {
-        street: '',
-        city: '',
-        district: '',
-        zipCode: '',
+        street: 'Restoran içi servis',
+        city: 'Manisa',
+        district: 'Merkez',
+        zipCode: '45000',
         country: 'Türkiye',
-        coordinates: { lat: 0, lng: 0 }
+        coordinates: { lat: 38.7312, lng: 27.4288 }
       },
       paymentMethod: paymentMethod || 'cash_on_delivery',
       specialInstructions: notes || '',
-      estimatedDeliveryTime: new Date(Date.now() + 30 * 60 * 1000) // 30 dakika sonra
+      subtotal: totalAmount,
+      deliveryFee: 0,
+      total: totalAmount,
+      createdAt: new Date(),
+      estimatedDeliveryTime: new Date(Date.now() + 30 * 60000), // 30 dakika
+      // Guest order metadata
+      metadata: customerInfo.isGuest ? {
+        orderType: 'guest',
+        guestEmail: customerInfo.email,
+        guestPhone: customerInfo.phone,
+        sessionId: userId.includes('guest_') ? userId : undefined
+      } : undefined
     };
 
-    console.log('📦 Sipariş verisi hazırlandı:', orderData);
+    console.log('📦 Sipariş API: Hazırlanan sipariş verisi:', {
+      userId,
+      isGuest: customerInfo.isGuest,
+      customerName: customerInfo.name,
+      itemCount: items.length,
+      total: totalAmount
+    });
 
+    // OrderService ile siparişi oluştur
     const orderId = await OrderService.createOrder(orderData);
-    
-    if (orderId) {
-      console.log('📦 Sipariş başarıyla oluşturuldu:', orderId);
-      return NextResponse.json({
-        success: true,
-        orderId,
-        message: 'Sipariş başarıyla oluşturuldu!'
-      });
-    } else {
-      console.error('📦 Sipariş oluşturulamadı');
-      return NextResponse.json({
-        success: false,
-        error: 'Sipariş oluşturulamadı'
-      }, { status: 500 });
-    }
 
-  } catch (error: any) {
-    console.error('📦 Sipariş API hatası:', error);
+    console.log('📦 Sipariş API: Sipariş başarıyla oluşturuldu:', orderId);
+
+    // Başarılı yanıt
+    return NextResponse.json({
+      success: true,
+      orderId,
+      message: customerInfo.isGuest 
+        ? 'Misafir siparişiniz başarıyla alındı!' 
+        : 'Siparişiniz başarıyla alındı!',
+      orderData: {
+        id: orderId,
+        status: OrderStatus.PENDING,
+        total: totalAmount,
+        isGuest: customerInfo.isGuest || false
+      }
+    });
+
+  } catch (error) {
+    console.error('📦 Sipariş API: Hata:', error);
+    
     return NextResponse.json({
       success: false,
-      error: error.message || 'Sipariş işlemi başarısız'
+      error: error instanceof Error ? error.message : 'Sipariş oluşturulurken bir hata oluştu'
     }, { status: 500 });
   }
 }

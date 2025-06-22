@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
+import { User } from 'firebase/auth';
 import { 
   UserIcon, 
   EnvelopeIcon, 
@@ -145,6 +146,20 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-6xl">
+        {/* Debug Bilgileri - Development modunda */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h4 className="font-medium text-blue-800 mb-2">🔍 Debug Bilgileri</h4>
+            <div className="text-sm text-blue-700 space-y-1">
+              <div>Kullanıcı ID: {user?.uid}</div>
+              <div>Email: {user?.email}</div>
+              <div>Doğrulanmış: {(user as any)?.emailVerified ? 'Evet' : 'Hayır'}</div>
+              <div>Aktif Tab: {activeTab}</div>
+              <div>Düzenleme Modu: {isEditing ? 'Evet' : 'Hayır'}</div>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -337,11 +352,11 @@ export default function ProfilePage() {
                     <div className="flex justify-between items-center py-2">
                       <span className="text-sm text-gray-600">E-posta Doğrulandı</span>
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        user.emailVerified 
+                        (user as any)?.emailVerified 
                           ? 'bg-green-100 text-green-800' 
                           : 'bg-yellow-100 text-yellow-800'
                       }`}>
-                        {user.emailVerified ? 'Doğrulandı' : 'Doğrulanmadı'}
+                        {(user as any)?.emailVerified ? 'Doğrulandı' : 'Doğrulanmadı'}
                       </span>
                     </div>
                   </div>
@@ -351,11 +366,11 @@ export default function ProfilePage() {
           )}
 
           {activeTab === 'addresses' && (
-            <AddressBook user={user} />
+            <AddressBook user={user as any} />
           )}
 
           {activeTab === 'favorites' && (
-            <FavoritesList user={user} />
+            <FavoritesList user={user as any} />
           )}
 
           {activeTab === 'orders' && (

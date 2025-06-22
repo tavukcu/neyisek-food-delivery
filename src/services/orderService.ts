@@ -23,7 +23,29 @@ export class OrderService {
   // Sipariş oluşturma (komisyon hesaplama ve e-posta bildirimi ile)
   static async createOrder(orderData: Omit<Order, 'id' | 'createdAt' | 'updatedAt' | 'commissionCalculation'>): Promise<string> {
     try {
-      console.log('🟦 OrderService Debug - Input orderData:', orderData);
+      console.log('🟦 OrderService Debug - Input orderData:', {
+        userId: orderData.userId,
+        restaurantId: orderData.restaurantId,
+        itemCount: orderData.items?.length,
+        userEmail: orderData.user?.email,
+        isGuest: orderData.metadata?.orderType === 'guest',
+        total: orderData.total,
+        hasDeliveryAddress: !!orderData.deliveryAddress
+      });
+
+      // Validasyon kontrolleri
+      if (!orderData.userId) {
+        throw new Error('userId eksik');
+      }
+      if (!orderData.restaurantId) {
+        throw new Error('restaurantId eksik');
+      }
+      if (!orderData.items || orderData.items.length === 0) {
+        throw new Error('items eksik veya boş');
+      }
+      if (!orderData.user) {
+        throw new Error('user bilgisi eksik');
+      }
 
       // Komisyon hesaplama
       const commissionCalculation = CommissionService.calculateCommission(orderData.subtotal);
@@ -41,7 +63,14 @@ export class OrderService {
       };
 
       console.log('🟦 OrderService Debug - Data to be sent to Firestore:', {
-        ...firestoreData,
+        id: orderRef.id,
+        userId: firestoreData.userId,
+        restaurantId: firestoreData.restaurantId,
+        itemCount: firestoreData.items.length,
+        status: firestoreData.status,
+        total: firestoreData.total,
+        isGuest: firestoreData.metadata?.orderType === 'guest',
+        hasDeliveryAddress: !!firestoreData.deliveryAddress,
         createdAt: '[ServerTimestamp]',
         updatedAt: '[ServerTimestamp]'
       });
@@ -50,21 +79,26 @@ export class OrderService {
       console.log('🟦 OrderService Debug - Security rule check:', {
         hasUserId: !!firestoreData.userId,
         userIdValue: firestoreData.userId,
-        isUserIdString: typeof firestoreData.userId === 'string'
+        isUserIdString: typeof firestoreData.userId === 'string',
+        userIdLength: firestoreData.userId?.length
       });
 
       console.log('🟦 OrderService Debug - Attempting Firestore write...');
       await setDoc(orderRef, firestoreData);
       console.log('🟢 OrderService Debug - Firestore write successful!');
 
-      // Sipariş onay e-postası gönder
-      try {
-        console.log('🟦 OrderService Debug - Attempting to send confirmation email...');
-        await this.sendOrderConfirmationEmail(orderRef.id, orderData);
-        console.log('🟢 OrderService Debug - Confirmation email sent successfully!');
-      } catch (emailError) {
-        console.error('🟡 OrderService Debug - Email error (non-blocking):', emailError);
-        // E-posta hatası sipariş oluşturmayı etkilemesin
+      // Sipariş onay e-postası gönder (sadece e-posta varsa)
+      if (orderData.user?.email) {
+        try {
+          console.log('🟦 OrderService Debug - Attempting to send confirmation email...');
+          await this.sendOrderConfirmationEmail(orderRef.id, orderData);
+          console.log('🟢 OrderService Debug - Confirmation email sent successfully!');
+        } catch (emailError) {
+          console.error('🟡 OrderService Debug - Email error (non-blocking):', emailError);
+          // E-posta hatası sipariş oluşturmayı etkilemesin
+        }
+      } else {
+        console.log('🟡 OrderService Debug - No email provided, skipping confirmation email');
       }
 
       console.log('🟢 OrderService Debug - Order creation completed successfully with ID:', orderRef.id);
@@ -78,8 +112,23 @@ export class OrderService {
           name: error.name,
           message: error.message,
           code: (error as any).code,
-          stack: error.stack
+          stack: error.stack?.split('\n').slice(0, 5).join('\n') // İlk 5 satır
         });
+      }
+      
+      // Firebase hatalarını daha anlaşılır hale getir
+      if ((error as any)?.code) {
+        const firebaseError = error as any;
+        switch (firebaseError.code) {
+          case 'permission-denied':
+            throw new Error('Firestore izin hatası: Sipariş oluşturma yetkisi yok');
+          case 'unavailable':
+            throw new Error('Firestore geçici olarak kullanılamıyor, lütfen tekrar deneyin');
+          case 'deadline-exceeded':
+            throw new Error('Firestore zaman aşımı, lütfen tekrar deneyin');
+          default:
+            throw new Error(`Firestore hatası: ${firebaseError.message}`);
+        }
       }
       
       throw error;

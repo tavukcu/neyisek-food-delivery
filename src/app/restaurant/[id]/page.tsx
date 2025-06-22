@@ -364,10 +364,10 @@ export default function RestaurantDetailPage() {
                 {filteredProducts.length > 0 ? (
                   <div className="space-y-4">
                     {filteredProducts.map((product) => (
-                      <div key={product.id} className="card p-6 hover:shadow-lg transition-shadow duration-200">
-                        <div className="flex gap-6">
+                      <div key={product.id} className="card p-4 sm:p-6 hover:shadow-lg transition-shadow duration-200">
+                        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
                           {/* Product Image */}
-                          <div className="w-32 h-32 bg-gray-200 rounded-lg flex-shrink-0">
+                          <div className="w-full sm:w-32 h-48 sm:h-32 bg-gray-200 rounded-lg flex-shrink-0">
                             {product.images && product.images.length > 0 ? (
                               <img 
                                 src={product.images[0].url} 
@@ -382,27 +382,27 @@ export default function RestaurantDetailPage() {
                           </div>
 
                           {/* Product Info */}
-                          <div className="flex-1">
-                            <div className="flex justify-between items-start mb-2">
-                              <h3 className="text-xl font-bold text-gray-900">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2">
+                              <h3 className="text-lg sm:text-xl font-bold text-gray-900 break-words">
                                 {product.name}
                               </h3>
-                              <span className="text-2xl font-bold text-primary-600">
+                              <span className="text-xl sm:text-2xl font-bold text-primary-600 flex-shrink-0">
                                 ₺{product.price}
                               </span>
                             </div>
                             
-                            <p className="text-gray-600 mb-4">
+                            <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base break-words">
                               {product.description}
                             </p>
 
                             {/* Tags */}
                             {product.tags && product.tags.length > 0 && (
-                              <div className="flex flex-wrap gap-2 mb-4">
+                              <div className="flex flex-wrap gap-2 mb-3 sm:mb-4">
                                 {product.tags.map((tag, index) => (
                                   <span 
                                     key={index}
-                                    className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-sm"
+                                    className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs sm:text-sm"
                                   >
                                     {tag}
                                   </span>
@@ -438,7 +438,7 @@ export default function RestaurantDetailPage() {
                               ) : (
                                 <button
                                   onClick={() => addToCart(product)}
-                                  className="btn-primary flex items-center gap-2"
+                                  className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 text-sm sm:text-base"
                                 >
                                   <Plus className="h-4 w-4" />
                                   Sepete Ekle

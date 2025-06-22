@@ -50,6 +50,14 @@ interface AdvancedOrderCompletionProps {
   cartItems: CartItem[];
   total: number;
   onClearCart: () => void;
+  selectedAddress?: Address | null;
+  onAddressSelect?: (address: string, lat: number, lng: number, city?: string, district?: string) => void;
+  onAddressChange?: (address: string) => void;
+  currentLocation?: Address | null;
+  onDetectLocation?: () => void;
+  isDetectingLocation?: boolean;
+  locationError?: string | null;
+  deliveryMethod?: 'delivery' | 'pickup' | 'dine_in';
 }
 
 interface DeliveryEstimate {
@@ -83,7 +91,15 @@ export default function AdvancedOrderCompletion({
   className = '', 
   cartItems, 
   total,
-  onClearCart 
+  onClearCart,
+  selectedAddress: propSelectedAddress,
+  onAddressSelect,
+  onAddressChange,
+  currentLocation,
+  onDetectLocation,
+  isDetectingLocation = false,
+  locationError,
+  deliveryMethod: propDeliveryMethod
 }: AdvancedOrderCompletionProps) {
   const router = useRouter();
   const { user } = useAuth();
@@ -93,8 +109,9 @@ export default function AdvancedOrderCompletion({
   const [completionStep, setCompletionStep] = useState<'review' | 'payment' | 'confirmation' | 'tracking'>('review');
   
   // Advanced Location Features
-  const [deliveryMethod, setDeliveryMethod] = useState<'delivery' | 'pickup' | 'dine_in'>('pickup');
-  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+  const deliveryMethod = propDeliveryMethod || 'pickup';
+  // selectedAddress artık props'tan geliyor
+  const selectedAddress = propSelectedAddress;
   const [deliveryEstimate, setDeliveryEstimate] = useState<DeliveryEstimate | null>(null);
   const [isCalculatingDelivery, setIsCalculatingDelivery] = useState(false);
   
@@ -356,7 +373,7 @@ export default function AdvancedOrderCompletion({
     const preferences = localStorage.getItem('userOrderPreferences');
     if (preferences) {
       const parsed = JSON.parse(preferences);
-      setDeliveryMethod(parsed.deliveryMethod || 'delivery');
+      // deliveryMethod artık props'tan geliyor, bu yüzden setDeliveryMethod kaldırıldı
       setPaymentMethod(parsed.paymentMethod || PaymentMethod.CASH_ON_DELIVERY);
     }
   };
@@ -704,14 +721,9 @@ export default function AdvancedOrderCompletion({
                   <SimpleMapPicker
                     onLocationSelect={(address, lat, lng) => {
                       console.log('🎯 Konum seçildi:', { address, lat, lng });
-                      setSelectedAddress({
-                        street: address,
-                        city: '', // Bu bilgiyi geocoding'den alacağız
-                        district: '',
-                        zipCode: '',
-                        country: 'Türkiye',
-                        coordinates: { lat, lng }
-                      });
+                      if (onAddressSelect) {
+                        onAddressSelect(address, lat, lng);
+                      }
                     }}
                     useCurrentLocation={true}
                     className="w-full"

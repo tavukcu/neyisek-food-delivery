@@ -12,8 +12,8 @@ interface SimpleMapPickerProps {
 }
 
 const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
-  initialLat = 41.0082, // İstanbul Taksim
-  initialLng = 28.9784,
+  initialLat = 38.6191, // Manisa merkez
+  initialLng = 27.4289,
   onLocationSelect,
   className = '',
   useCurrentLocation = true
@@ -25,6 +25,8 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [locationError, setLocationError] = useState('');
   const [isGeocoding, setIsGeocoding] = useState(false);
+  const [hasUserLocation, setHasUserLocation] = useState(false);
+  const [isInitialLocationSet, setIsInitialLocationSet] = useState(false);
 
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
@@ -32,18 +34,25 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
   const geocoderRef = useRef<any>(null);
 
   useEffect(() => {
-    loadGoogleMaps();
+    // Önce konum al, sonra haritayı yükle
+    if (useCurrentLocation && !hasUserLocation && !isGettingLocation) {
+      getCurrentLocation();
+    } else {
+      loadGoogleMaps();
+    }
   }, []);
 
   useEffect(() => {
-    if (useCurrentLocation && !isGettingLocation) {
-      getCurrentLocation();
+    // Konum alındıktan sonra haritayı yükle
+    if (hasUserLocation && !isMapLoaded) {
+      loadGoogleMaps();
     }
-  }, [useCurrentLocation]);
+  }, [hasUserLocation, isMapLoaded]);
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      setLocationError('Tarayıcınız konum hizmetlerini desteklemiyor');
+      console.log('❌ Geolocation desteklenmiyor, varsayılan konumla devam ediliyor');
+      loadGoogleMaps();
       return;
     }
 
@@ -51,46 +60,95 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
     setLocationError('');
     console.log('📍 Kullanıcı konumu alınıyor...');
 
+    // Önce mevcut konum iznini kontrol et
+    if (navigator.permissions) {
+      navigator.permissions.query({name: 'geolocation'}).then(result => {
+        console.log('🔐 Konum izni durumu:', result.state);
+        
+        if (result.state === 'denied') {
+          console.log('❌ Konum izni reddedilmiş, varsayılan konumla devam');
+          setLocationError('Konum izni reddedildi. Varsayılan konum kullanılacak.');
+          setIsGettingLocation(false);
+          setHasUserLocation(false);
+          loadGoogleMaps();
+          return;
+        }
+      }).catch(e => {
+        console.log('⚠️ Konum izni kontrolü yapılamadı:', e);
+      });
+    }
+
+    // Geolocation options - mobil için optimize edilmiş
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 12000, // 12 saniye timeout
+      maximumAge: 300000 // 5 dakika cache
+    };
+
+    console.log('🎯 Geolocation başlatılıyor...', options);
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
-        console.log('✅ Konum alındı:', { lat, lng });
+        const accuracy = position.coords.accuracy;
+        console.log('✅ Konum alındı:', { lat, lng, accuracy });
         
-        setCurrentLat(lat);
-        setCurrentLng(lng);
-        setIsGettingLocation(false);
-        
-        // Harita yüklenmişse konum güncelle
-        if (mapInstanceRef.current) {
-          updateMapLocation(lat, lng);
+        // Türkiye sınırları kontrolü (güvenlik için)
+        if (lat >= 35.0 && lat <= 42.5 && lng >= 25.0 && lng <= 45.0) {
+          setCurrentLat(lat);
+          setCurrentLng(lng);
+          setIsGettingLocation(false);
+          setHasUserLocation(true);
+          setIsInitialLocationSet(true);
+          
+          console.log('🎯 Türkiye içinde geçerli konum ayarlandı, harita yüklenecek');
+        } else {
+          console.log('⚠️ Konum Türkiye dışında, varsayılan konum kullanılacak');
+          setLocationError('Konum Türkiye dışında algılandı. Varsayılan konum kullanılacak.');
+          setIsGettingLocation(false);
+          setHasUserLocation(false);
+          loadGoogleMaps();
         }
       },
       (error) => {
         console.error('❌ Konum alma hatası:', error);
-        setLocationError('Konum alınamadı. Varsayılan konum kullanılıyor.');
+        let errorMessage = '';
+        
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = 'Konum erişimi reddedildi. Varsayılan konum kullanılacak.';
+            console.log('⚠️ Konum izni reddedildi, Manisa merkez kullanılacak');
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = 'Konum bilgisi mevcut değil. Varsayılan konum kullanılacak.';
+            console.log('⚠️ Konum mevcut değil, varsayılan konum kullanılacak');
+            break;
+          case error.TIMEOUT:
+            errorMessage = 'Konum alma zaman aşımına uğradı. Varsayılan konum kullanılacak.';
+            console.log('⚠️ Konum timeout, varsayılan konum kullanılacak');
+            break;
+          default:
+            errorMessage = 'Konum alınamadı. Varsayılan konum kullanılacak.';
+            console.log('⚠️ Bilinmeyen konum hatası, varsayılan konum kullanılacak');
+            break;
+        }
+        
+        console.log('📍 Varsayılan konum kullanılacak:', { lat: initialLat, lng: initialLng });
+        setLocationError(errorMessage);
         setIsGettingLocation(false);
+        setHasUserLocation(false);
+        
+        // Varsayılan konumla devam et
+        loadGoogleMaps();
       },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 300000
-      }
+      options
     );
   };
 
   const loadGoogleMaps = () => {
-    console.log('🗺️ Google Maps yükleme atlanıyor - Fallback mode aktif');
+    console.log('🗺️ Google Maps yükleniyor...');
     
-    // Şimdilik Google Maps'i devre dışı bırak ve fallback kullan
-    setLocationError('');
-    setIsMapLoaded(true);
-    setCurrentAddress('Manuel konum seçimi aktif');
-    onLocationSelect('Manuel konum seçimi', currentLat, currentLng);
-    return;
-    
-    // Google Maps kodu geçici olarak devre dışı
-    /*
     if (typeof window !== 'undefined' && (window as any).google?.maps) {
       console.log('✅ Google Maps zaten yüklü');
       initializeMap();
@@ -99,7 +157,7 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
 
     if (typeof window !== 'undefined') {
       const script = document.createElement('script');
-      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyBdVl-cerhPH9CLKam6HIB4_4h62DqPZdY';
+      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyDi1mpSI-0uvm-Bngr9pegN2vi2xBvQXsU';
       
       console.log('🔑 Google Maps API Key:', apiKey ? 'Mevcut' : 'Bulunamadı');
 
@@ -116,7 +174,7 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
       
       script.onerror = (error) => {
         console.error('❌ Google Maps yükleme hatası:', error);
-        setLocationError('Google Maps API yüklenemedi. Lütfen konum bilgilerini manuel olarak girin.');
+        setLocationError('Google Maps yüklenemedi. Lütfen internet bağlantınızı kontrol edin.');
         setIsMapLoaded(true);
       };
       
@@ -126,12 +184,11 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
       setTimeout(() => {
         if (!isMapLoaded) {
           console.error('⏰ Google Maps yükleme timeout');
-          setLocationError('Harita yüklenemedi. İnternet bağlantınızı kontrol edin.');
+          setLocationError('Harita yüklenemedi. Sayfa yeniden yüklenmeyi deneyin.');
           setIsMapLoaded(true);
         }
-      }, 10000);
+      }, 15000); // 15 saniye timeout
     }
-    */
   };
 
   const initializeMap = () => {
@@ -153,14 +210,30 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
       // Harita oluştur
       mapInstanceRef.current = new google.maps.Map(mapRef.current, {
         center: { lat: currentLat, lng: currentLng },
-        zoom: 15,
+        zoom: hasUserLocation ? 16 : 13, // Kullanıcı konumu varsa daha yakın zoom
         mapTypeControl: false,
         streetViewControl: false,
         fullscreenControl: false,
+        zoomControl: true,
+        zoomControlOptions: {
+          position: google.maps.ControlPosition.RIGHT_BOTTOM
+        },
+        gestureHandling: 'greedy', // Mobil için daha iyi dokunma kontrolü
+        disableDefaultUI: false,
+        clickableIcons: false,
+        // Mobil optimizasyonları
+        draggable: true,
+        scrollwheel: true,
+        disableDoubleClickZoom: false,
+        keyboardShortcuts: false,
         styles: [
           {
             featureType: 'poi.business',
             stylers: [{ visibility: 'off' }]
+          },
+          {
+            featureType: 'transit',
+            stylers: [{ visibility: 'simplified' }]
           }
         ]
       });
@@ -170,7 +243,17 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
         position: { lat: currentLat, lng: currentLng },
         map: mapInstanceRef.current,
         draggable: true,
-        title: 'Teslimat Adresi'
+        title: 'Teslimat Adresi',
+        icon: {
+          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="16" cy="16" r="12" fill="#3B82F6" stroke="white" stroke-width="3"/>
+              <circle cx="16" cy="16" r="4" fill="white"/>
+            </svg>
+          `),
+          scaledSize: new google.maps.Size(32, 32),
+          anchor: new google.maps.Point(16, 16)
+        }
       });
 
       // Geocoder oluştur
@@ -252,7 +335,70 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
   };
 
   const goToCurrentLocation = () => {
-    getCurrentLocation();
+    if (!navigator.geolocation) {
+      setLocationError('Tarayıcınız konum hizmetlerini desteklemiyor');
+      return;
+    }
+
+    setIsGettingLocation(true);
+    setLocationError('');
+    console.log('🔄 Mevcut konum yeniden alınıyor...');
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const accuracy = position.coords.accuracy;
+        console.log('✅ Yeni konum alındı:', { lat, lng, accuracy });
+        
+        // Türkiye sınırları kontrolü
+        if (lat >= 35.0 && lat <= 42.5 && lng >= 25.0 && lng <= 45.0) {
+          setCurrentLat(lat);
+          setCurrentLng(lng);
+          setIsGettingLocation(false);
+          setHasUserLocation(true);
+          
+          // Harita yüklenmişse hemen güncelle
+          if (mapInstanceRef.current && markerRef.current) {
+            console.log('🎯 Harita konumu güncelleniyor...');
+            updateMapLocation(lat, lng);
+          } else {
+            console.log('🔄 Harita henüz yüklenmemiş, konum kaydedildi');
+          }
+        } else {
+          console.log('⚠️ Konum Türkiye dışında');
+          setLocationError('Konum Türkiye dışında algılandı');
+          setIsGettingLocation(false);
+        }
+      },
+      (error) => {
+        console.error('❌ Konum yenileme hatası:', error);
+        let errorMessage = '';
+        
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = 'Konum erişimi reddedildi';
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = 'Konum bilgisi mevcut değil';
+            break;
+          case error.TIMEOUT:
+            errorMessage = 'Konum alma zaman aşımına uğradı';
+            break;
+          default:
+            errorMessage = 'Konum alınamadı';
+            break;
+        }
+        
+        setLocationError(errorMessage);
+        setIsGettingLocation(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 8000, // Daha hızlı timeout (butona basıldığında)
+        maximumAge: 0 // Fresh location (cache kullanma)
+      }
+    );
   };
 
   return (
@@ -278,7 +424,7 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
                   }}
                   step="0.000001"
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="41.0082"
+                  placeholder="38.6191"
                 />
               </div>
               <div>
@@ -293,11 +439,11 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
                   }}
                   step="0.000001"
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="28.9784"
+                  placeholder="27.4289"
                 />
               </div>
               <div className="text-xs text-gray-500 mt-2">
-                İstanbul merkez: 41.0082, 28.9784
+                Manisa merkez: 38.6191, 27.4289
               </div>
             </div>
           </div>
@@ -306,13 +452,21 @@ const SimpleMapPicker: React.FC<SimpleMapPickerProps> = ({
       
       {/* Harita Container */}
       <div 
-        className="w-full bg-gray-100 rounded-lg border border-gray-300 relative overflow-hidden"
-        style={{ height: '400px', minHeight: '400px' }}
+        className="w-full bg-gray-100 rounded-lg border border-gray-300 relative overflow-hidden touch-manipulation"
+        style={{ 
+          height: '300px', 
+          minHeight: '300px',
+          WebkitOverflowScrolling: 'touch'
+        }}
       >
         <div
           ref={mapRef}
-          className="w-full h-full"
-          style={{ height: '400px', display: mapInstanceRef.current ? 'block' : 'none' }}
+          className="w-full h-full touch-manipulation"
+          style={{ 
+            height: '300px', 
+            display: mapInstanceRef.current ? 'block' : 'none',
+            touchAction: 'manipulation'
+          }}
         />
         
         {/* Loading Overlay */}

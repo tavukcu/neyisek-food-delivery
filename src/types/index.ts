@@ -195,6 +195,13 @@ export interface Order {
   actualDeliveryTime?: Date;
   specialInstructions?: string;
   transactionId?: string;  // Mali işlem ID'si
+  metadata?: {  // Sipariş metadata'sı
+    orderType?: 'guest' | 'registered';
+    guestEmail?: string;
+    guestPhone?: string;
+    sessionId?: string;
+    [key: string]: any;
+  };
   createdAt: Date;
   updatedAt: Date;
 }

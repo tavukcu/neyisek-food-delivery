@@ -62,7 +62,7 @@ export class PushNotificationService {
       // Bildirim seçenekleri - sadece desteklenen özellikler
       const notificationOptions: NotificationOptions = {
         body: options?.body || '',
-        icon: options?.icon || '/icon-192x192.png',
+        icon: options?.icon || '/favicon.ico',
         tag: options?.tag || 'neyisek-notification',
         requireInteraction: options?.requireInteraction || false,
         silent: options?.silent || false,
@@ -118,7 +118,7 @@ export class PushNotificationService {
 
     return this.sendNotification(title, {
       body,
-      icon: '/icon-192x192.png',
+      icon: '/favicon.ico',
       tag: `order-${orderData.orderId}`,
       requireInteraction: true,
       vibrate: [300, 100, 300, 100, 300],
@@ -145,7 +145,7 @@ export class PushNotificationService {
 
     return this.sendNotification(title, {
       body,
-      icon: '/icon-192x192.png',
+      icon: '/favicon.ico',
       tag: `status-${orderData.orderId}`,
       data: {
         type: 'status_update',
@@ -171,7 +171,7 @@ export class PushNotificationService {
 
     return this.sendNotification(title, {
       body: data.message,
-      icon: '/icon-192x192.png',
+      icon: '/favicon.ico',
       tag: `admin-${data.type}-${Date.now()}`,
       requireInteraction: data.type === 'alert',
       data: {
@@ -249,9 +249,9 @@ export class PushNotificationService {
   static async registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
     if ('serviceWorker' in navigator) {
       try {
-        const registration = await navigator.serviceWorker.register('/sw.js');
-        console.log('Service Worker kaydedildi:', registration);
-        return registration;
+        // Service worker dosyası henüz mevcut değil
+        console.log('Service Worker henüz aktif değil');
+        return null;
       } catch (error) {
         console.error('Service Worker kaydedilemedi:', error);
         return null;

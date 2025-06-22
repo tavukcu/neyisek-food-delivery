@@ -37,9 +37,9 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
   const [isGeocoding, setIsGeocoding] = useState(false);
   
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<google.maps.Map | null>(null);
-  const markerRef = useRef<google.maps.Marker | null>(null);
-  const geocoderRef = useRef<google.maps.Geocoder | null>(null);
+  const mapInstanceRef = useRef<any>(null);
+  const markerRef = useRef<any>(null);
+  const geocoderRef = useRef<any>(null);
 
   // Google Maps yükleme
   useEffect(() => {
@@ -47,7 +47,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
       if (typeof window !== 'undefined' && !window.google) {
         const script = document.createElement('script');
         // Yeni çalışan API key deneyerek
-        const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyBdVl-cerhPH9CLKam6HIB4_4h62DqPZdY';
+        const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyDi1mpSI-0uvm-Bngr9pegN2vi2xBvQXsU';
         script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
         script.async = true;
         script.defer = true;
@@ -80,6 +80,18 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
           mapTypeControl: false,
           streetViewControl: false,
           fullscreenControl: false,
+          zoomControl: true,
+          zoomControlOptions: {
+            position: window.google.maps.ControlPosition.RIGHT_BOTTOM
+          },
+          gestureHandling: 'greedy', // Mobil için daha iyi dokunma kontrolü
+          disableDefaultUI: false,
+          clickableIcons: false,
+          // Mobil optimizasyonları
+          draggable: true,
+          scrollwheel: true,
+          disableDoubleClickZoom: false,
+          keyboardShortcuts: false,
         });
 
         const marker = new window.google.maps.Marker({
@@ -134,25 +146,15 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
 
     try {
       setIsGeocoding(true);
-      const response = await new Promise<google.maps.GeocoderResponse>((resolve, reject) => {
-        geocoderRef.current!.geocode(
-          { location: { lat, lng } },
-          (results, status) => {
-            if (status === 'OK') {
-              resolve({ results: results || [] } as google.maps.GeocoderResponse);
-            } else {
-              reject(new Error(status));
-            }
+      geocoderRef.current.geocode(
+        { location: { lat, lng } },
+        (results: any, status: any) => {
+          if (status === 'OK' && results && results[0]) {
+            setAddress(results[0].formatted_address);
+            onAddressChange?.(results[0].formatted_address);
           }
-        );
-      });
-
-      if (response.results && response.results[0]) {
-        const result = response.results[0];
-        const formattedAddress = result.formatted_address;
-        setAddress(formattedAddress);
-        onAddressChange(formattedAddress);
-      }
+        }
+      );
     } catch (error) {
       console.error('Reverse geocoding hatası:', error);
     } finally {
@@ -402,8 +404,12 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
         <div className="relative">
           <div
             ref={mapRef}
-            className="w-full h-64 rounded-lg border border-gray-300 bg-gray-100"
-            style={{ minHeight: '256px' }}
+            className="w-full h-64 rounded-lg border border-gray-300 bg-gray-100 touch-manipulation"
+            style={{ 
+              minHeight: '256px',
+              WebkitOverflowScrolling: 'touch',
+              touchAction: 'manipulation'
+            }}
           />
           {!isMapLoaded && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg">

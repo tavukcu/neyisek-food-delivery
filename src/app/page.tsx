@@ -26,7 +26,8 @@ import {
   Store,
   RefreshCw,
   Tag,
-  Brain
+  Brain,
+  UtensilsCrossed
 } from 'lucide-react';
 import Link from 'next/link';
 import { CategoryService } from '@/services/categoryService';
@@ -215,7 +216,7 @@ export default function HomePage() {
       <AdvertisementBanner position="hero" className="relative z-20" />
 
       {/* Hero Section - Golden Ratio Design */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-green-800 to-teal-900">
+      <section className="hero-section relative overflow-hidden bg-gradient-to-br from-emerald-900 via-green-800 to-teal-900">
         {/* Background Effects */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-br from-green-600/90 via-emerald-700/85 to-teal-800/90"></div>
@@ -226,136 +227,130 @@ export default function HomePage() {
 
         <div className="container-responsive relative z-10">
           {/* Golden Ratio Grid: 1.618 ratio for main content areas */}
-          <div className="grid grid-cols-1 lg:grid-cols-golden gap-8 lg:gap-16 items-center min-h-[100vh] py-12 lg:py-0">
+          <div className="grid grid-cols-1 lg:grid-cols-golden gap-2 sm:gap-4 lg:gap-8 items-center min-h-[50vh] sm:min-h-[80vh] lg:min-h-[100vh] py-4 sm:py-8 lg:py-0">
             
             {/* Left Column - Main Content (Golden Ratio: 1.618 part) */}
-            <div className="space-y-8 lg:space-y-12 text-center lg:text-left order-1 lg:order-1">
+            <div className="space-y-2 sm:space-y-4 lg:space-y-8 text-center lg:text-left order-1 lg:order-1">
               
               {/* Premium Badge */}
-              <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full px-6 py-3 shadow-2xl">
-                <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
-                <ChefHat className="h-5 w-5 text-yellow-400" />
-                <span className="text-white font-medium bg-gradient-to-r from-yellow-200 to-amber-200 bg-clip-text text-transparent">
-                  Premium Lezzet Deneyimi
+              <div className="inline-flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full px-2 sm:px-4 py-1 sm:py-2 shadow-2xl">
+                <div className="w-1 h-1 sm:w-2 sm:h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+                <ChefHat className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400" />
+                <span className="text-white font-medium bg-gradient-to-r from-yellow-200 to-amber-200 bg-clip-text text-transparent text-xs sm:text-sm">
+                  Premium Lezzet
                 </span>
               </div>
 
               {/* Main Heading - Golden Ratio Typography */}
-              <div className="space-y-6">
-                <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black leading-[0.9]">
-                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-amber-300 to-yellow-500 mb-2">
-                    Lezzetli
-                  </span>
-                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-emerald-300 to-green-500 mb-2">
-                    Yemekler
-                  </span>
-                  <span className="block text-white">
-                    Kapınızda!
-                  </span>
-                </h1>
-                
-                {/* Description - Golden Ratio spacing */}
-                <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-green-100 leading-relaxed max-w-4xl mx-auto lg:mx-0 mt-8">
-                  En sevdiğiniz yemekleri 
-                  <span className="text-yellow-300 font-bold"> hızlı, güvenli ve taze</span> 
-                  bir şekilde sipariş edin.
-                  <br className="hidden sm:block" />
-                  <span className="text-green-300 font-bold"> NeYisek.com</span> 
-                  ile lezzet sadece 
-                  <span className="text-yellow-300 font-bold"> bir tık uzağınızda.</span>
-                </p>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl xl:text-7xl font-black leading-tight">
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-500 mb-1 sm:mb-2">
+                  Lezzet
+                </span>
+                <span className="block text-white">
+                  Kapınızda!
+                </span>
+              </h1>
+
+              <p className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl text-green-100 leading-relaxed max-w-4xl mx-auto lg:mx-0 mt-2 sm:mt-4">
+                Türkiye'nin en büyük 
+                <span className="text-yellow-300 font-semibold"> yemek sipariş platformu</span> ile 
+                binlerce restorandan 
+                <span className="text-green-300 font-semibold"> hızlı teslimat</span> hizmetini keşfedin.
+              </p>
+
+              {/* Stats Grid */}
+              <div className="stats-grid grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3 lg:gap-6 mt-3 sm:mt-6">
+                <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-lg sm:rounded-xl p-2 sm:p-4 text-center">
+                  <div className="text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-400 mb-1">
+                    1000+
+                  </div>
+                  <div className="text-white text-xs font-medium">Restoran</div>
+                </div>
+                <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-lg sm:rounded-xl p-2 sm:p-4 text-center">
+                  <div className="text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400 mb-1">
+                    50K+
+                  </div>
+                  <div className="text-white text-xs font-medium">Müşteri</div>
+                </div>
+                <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-lg sm:rounded-xl p-2 sm:p-4 text-center">
+                  <div className="text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-green-400 mb-1">
+                    30dk
+                  </div>
+                  <div className="text-white text-xs font-medium">Teslimat</div>
+                </div>
               </div>
 
-              {/* CTA Buttons - Golden Ratio spacing */}
-              <div className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start pt-8">
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-2 sm:gap-4 mt-3 sm:mt-6">
                 <Link 
                   href="/menu" 
-                  className="group bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-gray-900 font-bold py-6 px-12 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl inline-flex items-center justify-center gap-4 text-xl"
+                  className="w-full sm:w-auto bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white px-2 sm:px-4 py-1 sm:py-2 rounded-md sm:rounded-lg font-bold text-xs shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2"
                 >
-                  <ChefHat className="h-7 w-7" />
-                  <span>Menüyü Görüntüle</span>
-                  <ArrowRight className="h-6 w-6 group-hover:translate-x-2 transition-transform duration-300" />
+                  <UtensilsCrossed className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="text-xs sm:text-sm">Sipariş Ver</span>
                 </Link>
-              </div>
-
-              {/* Stats Grid - Golden Ratio proportions */}
-              <div className="grid grid-cols-3 gap-6 pt-12">
-                <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 text-center">
-                  <div className="text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-400 mb-2">
-                    500+
-                  </div>
-                  <div className="text-green-200 font-medium">Mutlu Müşteri</div>
-                </div>
-                
-                <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 text-center">
-                  <div className="text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400 mb-2">
-                    25dk
-                  </div>
-                  <div className="text-green-200 font-medium">Ortalama Teslimat</div>
-                </div>
-                
-                <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 text-center">
-                  <div className="text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-green-400 mb-2">
-                    98%
-                  </div>
-                  <div className="text-green-200 font-medium">Memnuniyet</div>
-                </div>
+                <Link 
+                  href="/restaurants" 
+                  className="w-full sm:w-auto bg-white/20 backdrop-blur-xl border border-white/30 text-white hover:bg-white/30 px-2 sm:px-4 py-1 sm:py-2 rounded-md sm:rounded-lg font-bold text-xs shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2"
+                >
+                  <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="text-xs sm:text-sm">Restoranlar</span>
+                </Link>
               </div>
             </div>
 
-            {/* Right Column - Feature Cards (Golden Ratio: 1 part) */}
-            <div className="space-y-6 order-2 lg:order-2">
-              <div className="grid gap-6">
+            {/* Right Column - Visual Content (Golden Ratio: 1 part) */}
+            <div className="order-2 lg:order-2 relative">
+              <div className="space-y-2 sm:space-y-4">
                 {/* AI Analytics Card */}
-                <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl p-8 transform hover:scale-105 transition-all duration-300">
-                  <div className="flex items-start gap-6">
-                    <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-4 flex-shrink-0">
-                      <BarChart3 className="h-8 w-8 text-white" />
+                <div className="feature-card bg-white/10 backdrop-blur-2xl border border-white/20 rounded-lg sm:rounded-2xl p-3 sm:p-6 transform hover:scale-105 transition-all duration-300">
+                  <div className="flex items-start gap-2 sm:gap-4">
+                    <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg p-2 sm:p-3 flex-shrink-0">
+                      <BarChart3 className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-2xl font-bold text-white mb-3">
-                        AI Destekli Analitikler
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm sm:text-lg lg:text-xl font-bold text-white mb-1 sm:mb-2 break-words">
+                        AI Analitikler
                       </h3>
-                      <p className="text-gray-300 leading-relaxed">
-                        Yapay zeka ile satış trendlerinizi analiz edin ve 
-                        <span className="text-blue-300 font-semibold"> %60 daha etkili</span> pazarlama stratejileri geliştirin.
+                      <p className="text-gray-300 leading-relaxed text-xs sm:text-sm break-words">
+                        Yapay zeka ile satış analizi ve 
+                        <span className="text-blue-300 font-semibold"> %60 daha etkili</span> pazarlama.
                       </p>
                     </div>
                   </div>
                 </div>
 
                 {/* Real-time Management Card */}
-                <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl p-8 transform hover:scale-105 transition-all duration-300">
-                  <div className="flex items-start gap-6">
-                    <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-4 flex-shrink-0">
-                      <Zap className="h-8 w-8 text-white" />
+                <div className="feature-card bg-white/10 backdrop-blur-2xl border border-white/20 rounded-lg sm:rounded-2xl p-3 sm:p-6 transform hover:scale-105 transition-all duration-300">
+                  <div className="flex items-start gap-2 sm:gap-4">
+                    <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg p-2 sm:p-3 flex-shrink-0">
+                      <Zap className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-2xl font-bold text-white mb-3">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm sm:text-lg lg:text-xl font-bold text-white mb-1 sm:mb-2 break-words">
                         Gerçek Zamanlı Yönetim
                       </h3>
-                      <p className="text-gray-300 leading-relaxed">
-                        Siparişlerinizi, stok durumunuzu ve müşteri geri bildirimlerini 
-                        <span className="text-green-300 font-semibold"> anlık olarak</span> takip edin ve yönetin.
+                      <p className="text-gray-300 leading-relaxed text-xs sm:text-sm break-words">
+                        Siparişleri ve stoku 
+                        <span className="text-green-300 font-semibold"> anlık</span> takip edin.
                       </p>
                     </div>
                   </div>
                 </div>
 
                 {/* Smart Payment Card */}
-                <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl p-8 transform hover:scale-105 transition-all duration-300">
-                  <div className="flex items-start gap-6">
-                    <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl p-4 flex-shrink-0">
-                      <CreditCard className="h-8 w-8 text-white" />
+                <div className="feature-card bg-white/10 backdrop-blur-2xl border border-white/20 rounded-lg sm:rounded-2xl p-3 sm:p-6 transform hover:scale-105 transition-all duration-300">
+                  <div className="flex items-start gap-2 sm:gap-4">
+                    <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg p-2 sm:p-3 flex-shrink-0">
+                      <CreditCard className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-2xl font-bold text-white mb-3">
-                        Akıllı Ödeme Sistemi
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm sm:text-lg lg:text-xl font-bold text-white mb-1 sm:mb-2 break-words">
+                        Güvenli Ödeme
                       </h3>
-                      <p className="text-gray-300 leading-relaxed">
-                        Blockchain tabanlı güvenli ödemeler, 
-                        <span className="text-purple-300 font-semibold"> anında transfer</span> ve 
-                        düşük komisyon oranları ile kazancınızı maksimize edin.
+                      <p className="text-gray-300 leading-relaxed text-xs sm:text-sm break-words">
+                        Hızlı ödeme ile 
+                        <span className="text-purple-300 font-semibold"> sorunsuz</span> alışveriş.
                       </p>
                     </div>
                   </div>
